@@ -1,0 +1,49 @@
+import { Route, Routes } from 'react-router-dom';
+import { ROUTERS } from './utils/router';
+import GlobalStyles from './component/globalStyles';
+import { createContext, useContext, useState } from 'react';
+import HomePage from './pages/HomePage';
+import HomeLayout from './layouts/HomeLayout';
+
+export const AuthContext = createContext();
+
+export const useAuth = () => {
+    return useContext(AuthContext);
+};
+
+const renderUserRouter = () => {
+    const [isLogin, setIsLogin] = useState(false);
+
+    const userRouters = [
+        {
+            path: ROUTERS.HOME,
+            component: <HomePage />,
+            layout: HomeLayout,
+        },
+    ];
+    return (
+        <AuthContext.Provider value={{ isLogin, setIsLogin }}>
+            <GlobalStyles>
+                <Routes>
+                    {userRouters.map((item, index) => (
+                        <Route
+                            key={index}
+                            path={item.path}
+                            element={
+                                item.layout ? (
+                                    <item.layout>{item.component}</item.layout>
+                                ) : (
+                                    <>{item.component}</>
+                                )
+                            }
+                        />
+                    ))}
+                </Routes>
+            </GlobalStyles>
+        </AuthContext.Provider>
+    );
+};
+
+export const RouterCustom = () => {
+    return renderUserRouter();
+};
