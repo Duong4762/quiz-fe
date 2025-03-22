@@ -14,7 +14,7 @@ export const useAuth = () => {
 const renderUserRouter = () => {
     const [isLogin, setIsLogin] = useState(false);
 
-    const userRouters = [
+    const routers = [
         {
             path: ROUTERS.HOME,
             component: <HomePage />,
@@ -25,7 +25,7 @@ const renderUserRouter = () => {
         <AuthContext.Provider value={{ isLogin, setIsLogin }}>
             <GlobalStyles>
                 <Routes>
-                    {userRouters.map((item, index) => (
+                    {routers.map((item, index) => (
                         <Route
                             key={index}
                             path={item.path}
