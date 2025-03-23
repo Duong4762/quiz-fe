@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ROUTERS } from './utils/router';
 import GlobalStyles from './component/globalStyles';
 import { createContext, useContext, useState } from 'react';
-import HomePage from './pages/HomePage';
+import MainContent from './pages/mainContent';
 import HomeLayout from './layouts/HomeLayout';
 
 export const AuthContext = createContext();
@@ -17,7 +17,7 @@ const renderUserRouter = () => {
     const routers = [
         {
             path: ROUTERS.HOME,
-            component: <HomePage />,
+            component: <MainContent />,
             layout: HomeLayout,
         },
     ];

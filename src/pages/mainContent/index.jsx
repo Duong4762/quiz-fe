@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import HomeTypeBar from '../../component/homeTypeBar';
 
-const HomePage = () => {
-    console.log('Render home page');
+const MainContent = () => {
+    console.log('Render main content');
     const [placeholder, setPlaceholder] = useState('123 456');
     return (
         <div className="container max-md:px-3.5 max-md:py-3.5">
@@ -20,7 +21,9 @@ const HomePage = () => {
                     />
                 </div>
             </div>
+            <HomeTypeBar />
+            <div>This is Home Page</div>
         </div>
     );
 };
-export default HomePage;
+export default MainContent;
