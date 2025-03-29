@@ -5,7 +5,7 @@ const HomeLayout = ({ children }) => {
     return (
         <>
             <HomeHeader />
-            <div className="flex h-[2000px] justify-center bg-[#fffdf4] pt-32 max-md:pt-14">
+            <div className="flex justify-center bg-[#fffdf4] pt-32 max-md:pt-14">
                 {children}
             </div>
         </>

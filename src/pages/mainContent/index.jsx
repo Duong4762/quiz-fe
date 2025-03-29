@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import HomeTypeBar from '../../component/homeTypeBar';
+import MethodCard from '../../component/methodCard';
+import ListQuiz from '../../component/listQuiz';
 
 const MainContent = () => {
     console.log('Render main content');
@@ -22,7 +24,17 @@ const MainContent = () => {
                 </div>
             </div>
             <HomeTypeBar />
-            <div>This is Home Page</div>
+            <div className="h-[1000px] max-md:mt-4">
+                <div className="grid grid-cols-12 gap-4">
+                    <div className="col-span-6 col-start-4 max-md:col-span-12">
+                        <MethodCard />
+                    </div>
+                </div>
+                <div className="flex flex-col gap-8 py-8 max-md:gap-2 max-md:py-2">
+                    <ListQuiz />
+                    <ListQuiz />
+                </div>
+            </div>
         </div>
     );
 };
