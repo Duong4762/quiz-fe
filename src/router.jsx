@@ -1,9 +1,10 @@
 import { Route, Routes } from 'react-router-dom';
-import { ROUTERS } from './utils/router';
 import GlobalStyles from './component/globalStyles';
 import { createContext, useContext, useState } from 'react';
+import EditPage from './pages/edit';
 import MainContent from './pages/mainContent';
 import HomeLayout from './layouts/HomeLayout';
+import EditPageLayout from './layouts/EditPageLayout';
 
 export const AuthContext = createContext();
 
@@ -13,31 +14,22 @@ export const useAuth = () => {
 
 const renderUserRouter = () => {
     const [isLogin, setIsLogin] = useState(false);
-
-    const routers = [
-        {
-            path: ROUTERS.HOME,
-            component: <MainContent />,
-            layout: HomeLayout,
-        },
-    ];
     return (
         <AuthContext.Provider value={{ isLogin, setIsLogin }}>
             <GlobalStyles>
                 <Routes>
-                    {routers.map((item, index) => (
-                        <Route
-                            key={index}
-                            path={item.path}
-                            element={
-                                item.layout ? (
-                                    <item.layout>{item.component}</item.layout>
-                                ) : (
-                                    <>{item.component}</>
-                                )
-                            }
-                        />
-                    ))}
+                    <Route
+                        path=""
+                        element={
+                            <HomeLayout>
+                                <MainContent />
+                            </HomeLayout>
+                        }
+                    />
+                    <Route path="/edit" element={<EditPageLayout />}>
+                        <Route path="new" element={<EditPage />} />
+                        <Route path=":idQuiz" element={<EditPage />} />
+                    </Route>
                 </Routes>
             </GlobalStyles>
         </AuthContext.Provider>
