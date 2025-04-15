@@ -32,7 +32,7 @@ const EditPageFooter = ({ data, setData, currentSlide, setCurrentSlide }) => {
         <>
             <div className="fixed top-[100%] left-0 flex h-16 w-full translate-y-[-100%] items-center gap-4 bg-[#23616a] px-4 shadow-[0px_-2px_6px_0px_#000000]">
                 <div
-                    className="flex h-11 w-18 items-center justify-center rounded-[7px] bg-[#19444a] font-bold text-white active:border-2"
+                    className={`flex h-11 w-18 items-center justify-center rounded-[7px] bg-[#19444a] font-bold text-white ${currentSlide === 'settings' ? 'border-2 border-[#00afc6]' : 'hover:border-2 hover:border-[rgba(0,175,198,0.56)]'}`}
                     onClick={() => setCurrentSlide('settings')}
                 >
                     Settings
@@ -41,7 +41,7 @@ const EditPageFooter = ({ data, setData, currentSlide, setCurrentSlide }) => {
                     return (
                         <div
                             key={index}
-                            className="flex h-11 w-18 items-center justify-center rounded-[7px] bg-[#19444a] font-bold text-white active:border-2"
+                            className={`flex h-11 w-18 items-center justify-center rounded-[7px] bg-[#19444a] font-bold text-white hover:border-2 hover:border-[#00afc6] ${currentSlide !== 'settings' && currentSlide === index ? 'border-2 border-[#00afc6]' : 'hover:border-2 hover:border-[rgba(0,175,198,0.56)]'}`}
                             onClick={() => setCurrentSlide(index)}
                         >
                             {index}

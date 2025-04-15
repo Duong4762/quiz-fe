@@ -25,7 +25,7 @@ const EditPageLayout = () => {
         <EditPageContext.Provider
             value={{ data, setData, currentSlide, setCurrentSlide }}
         >
-            <EditPageHeader />
+            <EditPageHeader data={data} />
             <Outlet />
             <EditPageFooter
                 data={data}

@@ -2,7 +2,6 @@ import { useRef, useState, useEffect, useContext } from 'react';
 import { EditPageContext } from '../../layouts/EditPageLayout';
 
 const EditImageArea = () => {
-    console.log('Render image area');
     const { data, setData, currentSlide } = useContext(EditPageContext);
     const fileInputRef = useRef();
     const [previewUrl, setPreviewUrl] = useState(null);
