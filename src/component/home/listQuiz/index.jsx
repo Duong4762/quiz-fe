@@ -27,7 +27,7 @@ const ListQuiz = () => {
             <div className="py-2 text-2xl">Filter</div>
             <div className="relative w-full overflow-hidden">
                 <button
-                    className="absolute top-[37%] left-0 z-10 aspect-square h-[37%] -translate-y-1/2 rounded-full bg-white text-[1rem] text-black opacity-75 shadow-md hover:opacity-100"
+                    className="absolute top-[37%] left-0 z-5 aspect-square h-[37%] -translate-y-1/2 rounded-full bg-white text-[1rem] text-black opacity-75 shadow-md hover:opacity-100"
                     onClick={scrollLeft}
                 >
                     ◀
@@ -60,7 +60,7 @@ const ListQuiz = () => {
                     ))}
                 </div>
                 <button
-                    className="absolute top-[37%] right-0 z-10 aspect-square h-[37%] -translate-y-1/2 rounded-full bg-amber-50 text-[1rem] text-black opacity-75 shadow-md hover:opacity-100"
+                    className="absolute top-[37%] right-0 z-5 aspect-square h-[37%] -translate-y-1/2 rounded-full bg-amber-50 text-[1rem] text-black opacity-75 shadow-md hover:opacity-100"
                     onClick={scrollRight}
                 >
                     ▶

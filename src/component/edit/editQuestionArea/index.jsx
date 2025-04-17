@@ -1,4 +1,4 @@
-import { EditPageContext } from '../../layouts/EditPageLayout';
+import { EditPageContext } from '../../../layouts/EditPageLayout';
 import { useContext } from 'react';
 
 const EditQuestionArea = () => {
@@ -46,6 +46,7 @@ const EditQuestionArea = () => {
                         <textarea
                             name="content"
                             className="w-full rounded-xl bg-white p-3 font-medium text-black hover:bg-amber-50 focus:bg-white focus:outline-none"
+                            value={data.questions[currentSlide].content}
                             onChange={handleChangeInput}
                             placeholder="Required"
                         ></textarea>
@@ -119,6 +120,7 @@ const EditQuestionArea = () => {
                         <textarea
                             name="fun_fact"
                             className="w-full rounded-xl bg-white p-3 font-medium text-black hover:bg-amber-50 focus:bg-white focus:outline-none"
+                            value={data.questions[currentSlide].fun_fact}
                             onChange={handleChangeInput}
                             placeholder="Optional"
                         ></textarea>

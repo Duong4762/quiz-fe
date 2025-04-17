@@ -1,6 +1,7 @@
-import upLoadFile from '../../apis/fileServices/uploadFile';
-import { createQuiz, updateQuiz } from '../../apis/quizServices';
-import { updateQuestion, createQuestion } from '../../apis/questionServices';
+import upLoadFile from '../../../apis/fileServices/uploadFile';
+import { createQuiz, updateQuiz } from '../../../apis/quizServices';
+import { updateQuestion, createQuestion } from '../../../apis/questionServices';
+import { Link } from 'react-router-dom';
 
 const EditPageHeader = ({ data }) => {
     console.log('Render edit page header');
@@ -12,8 +13,8 @@ const EditPageHeader = ({ data }) => {
         } else {
             updatedMediaLinkQuiz = data.media_link;
         }
-        const quizId = data.quiz_id
-            ? await updateQuiz(data.quiz_id, {
+        const quizId = data.id
+            ? await updateQuiz(data.id, {
                   name: data.name,
                   description: data.description,
                   media_link: updatedMediaLinkQuiz,
@@ -36,14 +37,14 @@ const EditPageHeader = ({ data }) => {
             } else {
                 updatedMediaLinkQuestion = question.media_link;
             }
-            question.question_id
-                ? await updateQuestion(question.id_question, {
+            question.id
+                ? await updateQuestion(question.id, {
                       quiz_id: quizId,
                       content: question.content,
                       fun_fact: question.fun_fact,
                       question_order: index + 1,
                       time: question.time,
-                      answers: question.answers,
+                      answers: question.answer,
                       media_link: updatedMediaLinkQuestion,
                   })
                 : await createQuestion({
@@ -52,19 +53,21 @@ const EditPageHeader = ({ data }) => {
                       fun_fact: question.fun_fact,
                       question_order: index + 1,
                       time: question.time,
-                      answers: question.answers,
+                      answers: question.answer,
                       media_link: updatedMediaLinkQuestion,
                   });
         });
     };
     return (
-        <div className="fixed top-0 left-0 h-14 w-full bg-[#19444a] shadow-[0px_2px_6px_0px_#000000]">
+        <div className="fixed top-0 left-0 z-10 h-14 w-full bg-[#19444a] shadow-[0px_2px_6px_0px_#000000]">
             <div className="flex h-full w-full items-center gap-6 px-8">
-                <img
-                    src="/public/image/logo.svg"
-                    alt="Logo"
-                    className="h-[55%] min-w-0 flex-shrink"
-                />
+                <Link to="/" className="h-[55%]">
+                    <img
+                        src="/public/image/logo.svg"
+                        alt="Logo"
+                        className="h-full min-w-0 flex-shrink"
+                    />
+                </Link>
                 <div
                     type="button"
                     className="shrink-0 cursor-pointer rounded-[0.5rem] bg-[#00afc6] px-8 py-1 font-bold text-white transition-transform active:scale-95"

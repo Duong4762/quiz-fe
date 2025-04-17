@@ -11,11 +11,11 @@ const postJson = async (path, data, token = '') => {
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
-
         const response = await axios.post(API.API_URL + path, data, {
             headers,
         });
-        return response;
+
+        return response.data;
     } catch (error) {
         console.error(
             'Lỗi khi gọi API:',
@@ -42,7 +42,7 @@ const postFile = async (path, file, token = '') => {
             headers,
         });
 
-        return response;
+        return response.data;
     } catch (error) {
         console.error('Upload lỗi:', error.response?.data || error.message);
         throw new Error(error.response?.data?.message || 'Upload thất bại');
@@ -62,8 +62,7 @@ const get = async (path, token = '') => {
         const response = await axios.get(API.API_URL + path, {
             headers,
         });
-
-        return response;
+        return response.data;
     } catch (error) {
         console.error(
             'Lỗi khi gọi API:',
@@ -88,7 +87,7 @@ const put = async (path, data, token = '') => {
         const response = await axios.put(API.API_URL + path, data, {
             headers,
         });
-        return response;
+        return response.data;
     } catch (error) {
         console.error(
             'Lỗi khi gọi API:',

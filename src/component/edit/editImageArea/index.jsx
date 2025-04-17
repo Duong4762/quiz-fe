@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useContext } from 'react';
-import { EditPageContext } from '../../layouts/EditPageLayout';
+import { EditPageContext } from '../../../layouts/EditPageLayout';
 
 const EditImageArea = () => {
     const { data, setData, currentSlide } = useContext(EditPageContext);
@@ -123,7 +123,7 @@ const EditImageArea = () => {
                         <img
                             src={previewUrl}
                             alt="Preview"
-                            className="h-full w-full rounded-[10px] object-contain"
+                            className="z-0 h-full w-full rounded-[10px] object-contain"
                             style={{
                                 transform: `scale(${zoom}) translate(${offset.x}px, ${offset.y}px)`,
                             }}

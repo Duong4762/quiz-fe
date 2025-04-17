@@ -1,13 +1,14 @@
 import { postJson } from '../baseApi';
+import { API } from '../../utils/api';
 
 const createQuiz = async (data) => {
     try {
+        console.log('call api create quizz');
         const apiCreateQuiz = '/api/v1/quizzes';
-        const response = await postJson(
-            apiCreateQuiz,
-            data,
-            'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiY2xhaW1zIjp7ImlkIjoxLCJlbWFpbCI6InR1Mjk4QGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpmYWxzZX0sImlhdCI6MTc0NDY0MTMwMywiZXhwIjoxNzQ1NTA1MzAzfQ.NoZBsXhf1UlEgj2eqy_6KIfbgL0L1MsoPF5r2lshP2w'
-        );
+        const response = await postJson(apiCreateQuiz, data, API.TOKEN);
+        console.log('call api create quizz completely');
+        console.log(response.data.id);
+        return response.data.id;
     } catch (error) {
         console.log(error);
     }

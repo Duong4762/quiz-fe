@@ -1,5 +1,5 @@
-import EditPageHeader from '../component/editPageHeader';
-import EditPageFooter from '../component/editPageFooter';
+import EditPageHeader from '../component/edit/editPageHeader';
+import EditPageFooter from '../component/edit/editPageFooter';
 import { createContext, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ const EditPageLayout = () => {
         description: '',
         media_link: '',
         tag_ids: [],
-        modifier: '',
+        modifier: 1,
         questions: [],
     });
     useEffect(() => {

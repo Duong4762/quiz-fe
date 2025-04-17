@@ -1,13 +1,13 @@
 import { postJson, put } from '../baseApi';
+import { API } from '../../utils/api';
 
 const updateQuiz = async (id, data) => {
     try {
+        console.log('call api update quizz');
         const apiUpdateQuiz = '/api/v1/quizzes' + `/${id}`;
-        const response = await put(
-            apiUpdateQuiz,
-            data,
-            'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiY2xhaW1zIjp7ImlkIjoxLCJlbWFpbCI6InR1Mjk4QGdtYWlsLmNvbSIsImF1dGhvcml0aWVzIjpmYWxzZX0sImlhdCI6MTc0NDY0MTMwMywiZXhwIjoxNzQ1NTA1MzAzfQ.NoZBsXhf1UlEgj2eqy_6KIfbgL0L1MsoPF5r2lshP2w'
-        );
+        const response = await put(apiUpdateQuiz, data, API.TOKEN);
+        console.log('call api update quizz completely');
+        return response.data.id;
     } catch (error) {
         console.log(error);
     }

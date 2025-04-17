@@ -1,4 +1,4 @@
-import { EditPageContext } from '../../layouts/EditPageLayout';
+import { EditPageContext } from '../../../layouts/EditPageLayout';
 import { useContext } from 'react';
 
 const EditQuizArea = () => {
@@ -56,6 +56,7 @@ const EditQuizArea = () => {
                     <textarea
                         name="description"
                         className="w-full rounded-xl bg-white p-3 font-medium text-black hover:bg-amber-50 focus:bg-white focus:outline-none"
+                        value={data.description}
                         onChange={handleChangeInput}
                     ></textarea>
                 </div>

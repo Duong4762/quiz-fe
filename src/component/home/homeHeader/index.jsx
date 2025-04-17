@@ -1,8 +1,11 @@
-import { SearchIcon, UserIcon, MenuIcon } from './../../assets/icon';
+import { SearchIcon, UserIcon, MenuIcon } from '../../../assets/icon';
 import { useState } from 'react';
+import { useAuth } from '../../../router';
+import { Link } from 'react-router-dom';
 
 const HomeHeader = () => {
     console.log('Render home header');
+    const { isLogin } = useAuth();
     const [placeholder, setPlaceholder] = useState('123 456');
     const [isOpenMenu, setIsOpenMenu] = useState(false);
     const iconList = [
@@ -21,11 +24,13 @@ const HomeHeader = () => {
             <div className="fixed z-10 flex w-full justify-center bg-[#fffdf4]">
                 <div className="container flex h-32 w-full items-center border-b-1 border-[#ceccc5] bg-[#fffdf4] max-md:h-14 max-md:justify-between">
                     <div className="flex h-full items-center px-2">
-                        <img
-                            src="/public/image/logo.svg"
-                            alt="Logo"
-                            className="h-[55%]"
-                        />
+                        <Link className="h-[55%]" to="/">
+                            <img
+                                src="/public/image/logo.svg"
+                                alt="Logo"
+                                className="h-full"
+                            />
+                        </Link>
                     </div>
                     <div className="flex h-full items-center justify-between px-7 md:flex-1">
                         <div className="flex h-[70%] w-[80%] items-center justify-center gap-4 rounded-2xl bg-[#ffa7a0] text-[1.2rem] max-md:hidden">
@@ -50,19 +55,30 @@ const HomeHeader = () => {
                             >
                                 <MenuIcon className="h-[70%] w-[70%]" />
                             </div>
-                            <div className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-2">
-                                <UserIcon className="h-[70%] w-[70%] fill-black" />
-                            </div>
+                            {isLogin ? (
+                                <div className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-2">
+                                    <UserIcon className="h-[70%] w-[70%] fill-black" />
+                                </div>
+                            ) : (
+                                <Link to="/user/login" className="flex">
+                                    <div className="flex cursor-pointer items-center justify-center rounded-full border-3 bg-[#c6ea84] px-4 font-bold hover:bg-[#d1ee9d] active:translate-y-[2px]">
+                                        Sign in
+                                    </div>
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
             {isOpenMenu && (
-                <div className="fixed flex h-full w-full items-center justify-center">
+                <div className="fixed z-8 flex h-full w-full items-center justify-center">
                     <div className="h-full w-full bg-gray-800 opacity-40"></div>
                     <div className="absolute flex h-[70%] w-[90%] flex-col justify-between rounded-3xl bg-[#fffdf4] p-4">
                         {iconList.map((item, index) => (
-                            <div className="group flex items-center gap-2.5">
+                            <div
+                                className="group flex items-center gap-2.5"
+                                key={index}
+                            >
                                 <img
                                     src={item.src}
                                     alt="icon"

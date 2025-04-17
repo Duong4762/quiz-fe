@@ -5,6 +5,8 @@ import EditPage from './pages/edit';
 import MainContent from './pages/mainContent';
 import HomeLayout from './layouts/HomeLayout';
 import EditPageLayout from './layouts/EditPageLayout';
+import LoginPage from './pages/login';
+import RegisterPage from './pages/register';
 
 export const AuthContext = createContext();
 
@@ -18,14 +20,11 @@ const renderUserRouter = () => {
         <AuthContext.Provider value={{ isLogin, setIsLogin }}>
             <GlobalStyles>
                 <Routes>
-                    <Route
-                        path=""
-                        element={
-                            <HomeLayout>
-                                <MainContent />
-                            </HomeLayout>
-                        }
-                    />
+                    <Route path="" element={<HomeLayout />}>
+                        <Route index element={<MainContent />} />
+                        <Route path="user/login" element={<LoginPage />} />
+                        <Route path="user/create" element={<RegisterPage />} />
+                    </Route>
                     <Route path="/edit" element={<EditPageLayout />}>
                         <Route path="new" element={<EditPage />} />
                         <Route path=":idQuiz" element={<EditPage />} />

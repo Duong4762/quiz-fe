@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const MethodCard = () => {
     return (
         <div className="flex h-[16rem] justify-between rounded-3xl bg-[#284349] p-2.5 max-md:h-[12rem] max-md:p-0.5">
@@ -15,9 +17,11 @@ const MethodCard = () => {
                         Play for free with 300 participants
                     </div>
                 </div>
-                <div className="rounded-full border-4 border-black bg-[#50a56e] p-2 px-11 text-2xl max-md:text-[1rem]">
-                    Quiz editor
-                </div>
+                <Link to="/edit/new">
+                    <div className="cursor-pointer rounded-full border-4 border-black bg-[#50a56e] p-2 px-11 text-2xl shadow-md transition-all duration-150 ease-in-out hover:brightness-110 active:translate-y-1 active:shadow-sm max-md:text-[1rem]">
+                        Quiz editor
+                    </div>
+                </Link>
             </div>
         </div>
     );

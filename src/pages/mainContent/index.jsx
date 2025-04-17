@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import HomeTypeBar from '../../component/homeTypeBar';
-import MethodCard from '../../component/methodCard';
-import ListQuiz from '../../component/listQuiz';
+import HomeTypeBar from '../../component/home/homeTypeBar';
+import MethodCard from '../../component/home/methodCard';
+import ListQuiz from '../../component/home/listQuiz';
 
 const MainContent = () => {
     console.log('Render main content');
