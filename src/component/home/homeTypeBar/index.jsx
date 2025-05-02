@@ -1,4 +1,11 @@
+import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
 const HomeTypeBar = () => {
+    let { tagId } = useParams();
+    if (!tagId) {
+        tagId = 0;
+    }
     const iconList = [
         { src: '/public/image/homeIcon.svg', label: 'Start' },
         { src: '/public/image/artIcon.svg', label: 'Art & Literature' },
@@ -13,16 +20,19 @@ const HomeTypeBar = () => {
     return (
         <div className="flex justify-between py-4 max-md:hidden">
             {iconList.map((item, index) => (
-                <div
-                    key={index}
-                    className="group flex cursor-pointer flex-col items-center"
-                >
-                    <img src={item.src} alt="icon" className="h-10 w-10" />
-                    <div className="text-[1rem] font-bold text-gray-500 transition-all group-hover:text-gray-950">
-                        {item.label}
+                <Link to={index === 0 ? '/' : `/tag/${index}`} key={index}>
+                    <div className="group flex cursor-pointer flex-col items-center">
+                        <img src={item.src} alt="icon" className="h-10 w-10" />
+                        <div
+                            className={`text-[1rem] font-bold text-gray-500 transition-all group-hover:text-gray-950 ${Number(tagId) === index ? 'text-gray-950' : ''}`}
+                        >
+                            {item.label}
+                        </div>
+                        <div
+                            className={`h-1 w-full rounded-full bg-black opacity-0 transition-opacity group-hover:opacity-100 ${Number(tagId) === index ? 'opacity-100' : ''}`}
+                        ></div>
                     </div>
-                    <div className="h-1 w-full rounded-full bg-black opacity-0 transition-opacity group-hover:opacity-100"></div>
-                </div>
+                </Link>
             ))}
         </div>
     );

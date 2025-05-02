@@ -1,11 +1,50 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import HomeTypeBar from '../../component/home/homeTypeBar';
 import MethodCard from '../../component/home/methodCard';
 import ListQuiz from '../../component/home/listQuiz';
+import { useParams } from 'react-router-dom';
+import getListQuizByKeyword from '../../apis/quizServices/getListQuizByKeyword';
+import getListQuizByTag from '../../apis/quizServices/getListQuizByTag';
 
 const MainContent = () => {
+    const allTags = [
+        'Art & Literature',
+        'Entertainment',
+        'Geography',
+        'History',
+        'Languages',
+        'Science & Nature',
+        'Sports',
+        'Trivia',
+    ];
+    const { tagId } = useParams();
     console.log('Render main content');
     const [placeholder, setPlaceholder] = useState('123 456');
+    const [listQuizByTag, setListQuizByTag] = useState();
+    const [listQuizRecently, setListQuizRecently] = useState();
+    const [listQuizByRating, setListQuizByRating] = useState();
+    useEffect(() => {
+        const fetchData = async () => {
+            const listQuizByRating = await getListQuizByKeyword(
+                '',
+                'rating',
+                ''
+            );
+            setListQuizByRating(listQuizByRating);
+            console.log(listQuizByRating);
+            const listQuizRecently = await getListQuizByKeyword(
+                '',
+                'createdAt',
+                ''
+            );
+            setListQuizRecently(listQuizRecently);
+            console.log(listQuizRecently);
+            const listQuizByTag = tagId ? await getListQuizByTag(tagId) : null;
+            setListQuizByTag(listQuizByTag);
+            console.log(listQuizByTag);
+        };
+        fetchData();
+    }, [tagId]);
     return (
         <div className="container max-md:px-3.5 max-md:py-3.5">
             <div className="flex justify-center rounded-2xl bg-[#ffa7a0] py-4 md:hidden">
@@ -31,8 +70,17 @@ const MainContent = () => {
                     </div>
                 </div>
                 <div className="flex flex-col gap-8 py-8 max-md:gap-2 max-md:py-2">
-                    <ListQuiz />
-                    <ListQuiz />
+                    {listQuizByTag && (
+                        <ListQuiz
+                            filter={allTags[Number(tagId) - 1]}
+                            list={listQuizByTag}
+                        />
+                    )}
+                    <ListQuiz filter="Recently" list={listQuizRecently} />
+                    <ListQuiz
+                        filter="Best rating right now"
+                        list={listQuizByRating}
+                    />
                 </div>
             </div>
         </div>

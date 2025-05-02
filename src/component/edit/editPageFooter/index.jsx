@@ -1,11 +1,17 @@
+import { useEffect } from 'react';
+
 const EditPageFooter = ({ data, setData, currentSlide, setCurrentSlide }) => {
-    console.log('Render edit page footer');
     const addSlide = () => {
         const newQuestion = {
             content: '',
             fun_fact: '',
             time: 5,
-            media_link: null,
+            media: {
+                media_link: null,
+                zoom: null,
+                offset_x: null,
+                offset_y: null,
+            },
             answer: [
                 {
                     content: '',
@@ -27,6 +33,12 @@ const EditPageFooter = ({ data, setData, currentSlide, setCurrentSlide }) => {
         };
         setData({ ...data, questions: [...data.questions, newQuestion] });
     };
+
+    useEffect(() => {
+        if (data.questions.length != 0) {
+            setCurrentSlide(data.questions.length - 1);
+        }
+    }, [data.questions.length]);
 
     return (
         <>

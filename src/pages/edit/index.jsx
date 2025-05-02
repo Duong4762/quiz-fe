@@ -9,7 +9,6 @@ import { getQuiz } from '../../apis/quizServices';
 const EditPage = () => {
     const { idQuiz } = useParams();
     const { data, currentSlide, setData } = useContext(EditPageContext);
-    console.log('Render edit page');
     useEffect(() => {
         if (idQuiz) {
             fetchQuiz(idQuiz);

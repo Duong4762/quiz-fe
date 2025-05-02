@@ -4,14 +4,14 @@ import { useContext } from 'react';
 const EditQuizArea = () => {
     const { data, setData } = useContext(EditPageContext);
     const allTags = [
-        { id: 1, tag: 'Science' },
-        { id: 2, tag: 'History' },
-        { id: 3, tag: 'Math' },
-        { id: 4, tag: 'Literature' },
-        { id: 5, tag: 'Art' },
-        { id: 6, tag: 'Music' },
+        { id: 1, tag: 'Art & Literature' },
+        { id: 2, tag: 'Entertainment' },
+        { id: 3, tag: 'Geography' },
+        { id: 4, tag: 'History' },
+        { id: 5, tag: 'Languages' },
+        { id: 6, tag: 'Science & Nature' },
         { id: 7, tag: 'Sports' },
-        { id: 8, tag: 'Technology' },
+        { id: 8, tag: 'Trivia' },
     ];
 
     const handleChangeInput = (e) => {

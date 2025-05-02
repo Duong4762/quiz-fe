@@ -5,9 +5,12 @@ const createQuiz = async (data) => {
     try {
         console.log('call api create quizz');
         const apiCreateQuiz = '/api/v1/quizzes';
-        const response = await postJson(apiCreateQuiz, data, API.TOKEN);
+        const response = await postJson(
+            apiCreateQuiz,
+            data,
+            localStorage.getItem('token')
+        );
         console.log('call api create quizz completely');
-        console.log(response.data.id);
         return response.data.id;
     } catch (error) {
         console.log(error);

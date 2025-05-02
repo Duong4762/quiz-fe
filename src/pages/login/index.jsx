@@ -1,14 +1,52 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import login from '../../apis/userServices/login';
 
 const LoginPage = () => {
-    const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/';
+    const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState({ email: '', password: '' });
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
     const handleChangeInput = (e) => {
         const { name, value } = e.target;
         setData({ ...data, [name]: value });
+        if (name === 'email') setEmailError('');
+        if (name === 'password') setPasswordError('');
     };
-    const handleSubmit = () => {};
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setErrorMessage('');
+        setEmailError('');
+        setPasswordError('');
+        let hasError = false;
+        if (!data.email.trim()) {
+            setEmailError('Please enter your email');
+            hasError = true;
+        }
+        if (!data.password.trim()) {
+            setPasswordError('Please enter your password');
+            hasError = true;
+        }
+
+        if (hasError) {
+            setLoading(false);
+            return;
+        }
+        try {
+            await login(data);
+            navigate(from, { replace: true });
+        } catch (error) {
+            console.log(error);
+            setErrorMessage(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
         <div className="w-full max-w-2xl bg-[#fffdf4] py-8">
             <form
@@ -24,33 +62,37 @@ const LoginPage = () => {
                         name="email"
                         type="email"
                         placeholder="Email"
-                        className="mb-4 w-full rounded-md bg-[#fef8dd] px-4 py-3 placeholder-[#73726e] outline-none"
+                        className="w-full rounded-md bg-[#fef8dd] px-4 py-3 placeholder-[#73726e] outline-none"
                         value={data.email}
                         onChange={handleChangeInput}
                     />
-                    <div>
+                    {emailError && (
+                        <div className="text-sm text-red-500">{emailError}</div>
+                    )}
+                    <div className="flex flex-col gap-6">
                         <input
                             name="password"
-                            type={showPassword ? 'text' : 'password'}
+                            type="password"
                             placeholder="Password"
-                            className="mb-6 w-full rounded-md bg-[#fef8dd] px-4 py-3 placeholder-[#73726e] outline-none"
+                            className="w-full rounded-md bg-[#fef8dd] px-4 py-3 placeholder-[#73726e] outline-none"
                             value={data.password}
                             onChange={handleChangeInput}
                         />
-                        <div className="mb-2 flex items-center">
-                            <label className="mr-2 text-[#73726e]">Show</label>
-                            <input
-                                type="checkbox"
-                                checked={showPassword}
-                                onChange={() => setShowPassword(!showPassword)}
-                            />
-                        </div>
+                        {(passwordError || errorMessage) && (
+                            <div className="text-sm text-red-500">
+                                {passwordError || errorMessage}
+                            </div>
+                        )}
                     </div>
                     <button
                         type="submit"
                         className="w-full rounded-md bg-[#0ca65a] py-3 font-bold text-white shadow-sm transition-transform duration-100 hover:bg-[#0db765] active:translate-y-[2px]"
                     >
-                        Sign in
+                        {loading ? (
+                            <div className="m-auto aspect-square h-6 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                        ) : (
+                            'Sign in'
+                        )}
                     </button>
                     <div className="flex justify-center py-12 text-[1.1rem] font-bold text-[#73726e]">
                         No account?

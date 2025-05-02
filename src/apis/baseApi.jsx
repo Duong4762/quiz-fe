@@ -1,5 +1,21 @@
 import axios from 'axios';
 import { API } from '../utils/api';
+import { setLoginStateOutsideComponent } from '../router';
+
+const apiClient = axios.create();
+
+apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            setLoginStateOutsideComponent(false);
+            window.location.href = '/user/login';
+        }
+        return Promise.reject(error);
+    }
+);
 
 const postJson = async (path, data, token = '') => {
     try {
@@ -11,17 +27,13 @@ const postJson = async (path, data, token = '') => {
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
-        const response = await axios.post(API.API_URL + path, data, {
+        const response = await apiClient.post(API.API_URL + path, data, {
             headers,
         });
 
         return response.data;
     } catch (error) {
-        console.error(
-            'Lỗi khi gọi API:',
-            error.response?.data || error.message
-        );
-        throw new Error(error.response?.data?.message || 'Đăng nhập thất bại');
+        throw error;
     }
 };
 
@@ -38,14 +50,13 @@ const postFile = async (path, file, token = '') => {
             headers['Authorization'] = `Bearer ${token}`;
         }
 
-        const response = await axios.post(API.API_URL + path, formData, {
+        const response = await apiClient.post(API.API_URL + path, formData, {
             headers,
         });
 
         return response.data;
     } catch (error) {
-        console.error('Upload lỗi:', error.response?.data || error.message);
-        throw new Error(error.response?.data?.message || 'Upload thất bại');
+        throw error;
     }
 };
 
@@ -59,17 +70,12 @@ const get = async (path, token = '') => {
             headers['Authorization'] = `Bearer ${token}`;
         }
 
-        const response = await axios.get(API.API_URL + path, {
+        const response = await apiClient.get(API.API_URL + path, {
             headers,
         });
         return response.data;
     } catch (error) {
-        console.error(
-            'Lỗi khi gọi API:',
-            error.response?.data || error.message
-        );
-        console.error('Mã lỗi:', error.response?.status);
-        throw new Error(error.response?.data?.message || 'Lỗi khi gọi API');
+        throw error;
     }
 };
 
@@ -84,17 +90,32 @@ const put = async (path, data, token = '') => {
             headers['Authorization'] = `Bearer ${token}`;
         }
 
-        const response = await axios.put(API.API_URL + path, data, {
+        const response = await apiClient.put(API.API_URL + path, data, {
             headers,
         });
         return response.data;
     } catch (error) {
-        console.error(
-            'Lỗi khi gọi API:',
-            error.response?.data || error.message
-        );
-        throw new Error(error.response?.data?.message || 'Đăng nhập thất bại');
+        throw error;
     }
 };
 
-export { postFile, postJson, get, put };
+const del = async (path, token = '') => {
+    try {
+        const headers = {
+            'ngrok-skip-browser-warning': 'true',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await apiClient.delete(API.API_URL + path, {
+            headers,
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export { postFile, postJson, get, put, del };
