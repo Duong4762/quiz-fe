@@ -1,16 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { UserIcon } from '../../../assets/icon';
 import { setLoginStateOutsideComponent } from '../../../router';
 import getUserDetail from '../../../apis/userServices/getUserDetail';
 import updateUser from '../../../apis/userServices/updateUser';
+import uploadFile from '../../../apis/fileServices/uploadFile';
 
 const Settings = () => {
     const [username, setUsername] = useState();
     const [userInfor, setUserInfor] = useState();
+    const [showUploadModal, setShowUploadModal] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState();
+    const [avatarFile, setAvatarFile] = useState();
+    const fileInputRef = useRef();
+    const [isUploading, setIsUploading] = useState(false);
+    const [previewAvatar, setPreviewAvatar] = useState();
+
     const handleUpdateUser = async () => {
         try {
-            await updateUser({ username });
-            setUserInfor({ ...userInfor, username });
+            await updateUser({ username, avatar_url: avatarUrl || userInfor?.avatar });
+            console.log(username, avatarUrl);
+            setUserInfor({ ...userInfor, username, avatar: avatarUrl || userInfor?.avatar });
         } catch (error) {
             console.log(error);
         }
@@ -21,20 +30,54 @@ const Settings = () => {
         setLoginStateOutsideComponent(false);
         window.location.href = '/';
     };
+    const handleOpenUploadModal = () => setShowUploadModal(true);
+    const handleCloseUploadModal = () => setShowUploadModal(false);
+    const handleAvatarClick = () => setShowUploadModal(true);
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setPreviewAvatar(URL.createObjectURL(file));
+            setIsUploading(true);
+            setAvatarFile(file);
+            // Gọi API upload ảnh
+            const res = await uploadFile(file);
+            setIsUploading(false);
+            if (res) {
+                setAvatarUrl(res);
+            }
+            setShowUploadModal(false);
+        }
+    };
     useEffect(() => {
         const fetchData = async () => {
             const response = await getUserDetail();
             console.log(response);
             setUserInfor(response);
             setUsername(response.username);
+            setAvatarUrl(response.media.media_link);
         };
         fetchData();
+        return () => {
+            if (previewAvatar) URL.revokeObjectURL(previewAvatar);
+        };
     }, []);
     return (
         <>
             <div className="m-auto w-full max-w-[36rem] rounded-2xl bg-[#e4e3db] p-8">
-                <div className="flex items-center justify-center">
-                    <UserIcon className="w-[40%] rounded-full border-2 bg-[#ceccc5]" />
+                <div className="flex flex-col items-center justify-center relative gap-2">
+                    <div onClick={handleAvatarClick} className="cursor-pointer flex flex-col items-center">
+                        {avatarUrl || userInfor?.avatar ? (
+                            <img src={avatarUrl || userInfor?.avatar} alt="avatar" className="w-32 h-32 rounded-full border-2 bg-[#ceccc5] object-cover aspect-square" />
+                        ) : (
+                            <UserIcon className="w-32 h-32 rounded-full border-2 bg-[#ceccc5]" />
+                        )}
+                    </div>
+                    <button
+                        className="mt-3 rounded-full bg-[#b6a4e6] px-6 py-2 text-white font-bold hover:bg-[#a18ad6] transition"
+                        onClick={handleOpenUploadModal}
+                    >
+                        Change profile picture
+                    </button>
                 </div>
                 <div className="mt-8 flex flex-col justify-center gap-8">
                     <div className="flex w-full flex-col gap-3 text-[1.1rem]">
@@ -59,12 +102,12 @@ const Settings = () => {
                     </div>
                     <button
                         className={`m-auto flex-wrap rounded-full border-4 px-8 py-2 text-[1.3rem] font-bold active:translate-y-1 ${
-                            username === userInfor?.username
+                            (username === userInfor?.username && (avatarUrl === userInfor?.avatar))
                                 ? 'cursor-not-allowed bg-gray-300'
                                 : 'bg-[#cbe989] hover:bg-[#d1ee9d]'
                         } `}
                         onClick={handleUpdateUser}
-                        disabled={username === userInfor?.username}
+                        disabled={username === userInfor?.username && (avatarUrl === userInfor?.avatar)}
                     >
                         Save
                     </button>
@@ -78,6 +121,42 @@ const Settings = () => {
                     Sign out
                 </button>
             </div>
+            {showUploadModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div className="rounded-2xl bg-[#6d5a7b] p-8 flex flex-col items-center min-w-[340px] relative">
+                        <div className="font-bold text-white text-lg mb-4">Upload profile picture</div>
+                        <label className="w-32 h-32 rounded-full bg-[#e4e3db] flex items-center justify-center cursor-pointer mb-4 border-2 border-dashed border-[#b6a4e6] overflow-hidden">
+                            {previewAvatar ? (
+                                <img src={previewAvatar} alt="preview" className="w-full h-full object-cover" />
+                            ) : (
+                                <UserIcon className="w-16 h-16 text-[#b6a4e6]" />
+                            )}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
+                        </label>
+                        {isUploading && <div className="mb-2 text-white">Uploading...</div>}
+                        <button
+                            className="rounded-full bg-[#cbe989] px-6 py-2 font-bold text-[#333] hover:bg-[#d1ee9d] mb-2 disabled:opacity-50"
+                            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                            disabled={isUploading}
+                        >
+                            Choose image
+                        </button>
+                        <button
+                            className="rounded-full bg-[#ffa7a0] px-6 py-2 font-bold text-white hover:bg-[#ffb9b3]"
+                            onClick={handleCloseUploadModal}
+                            disabled={isUploading}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
