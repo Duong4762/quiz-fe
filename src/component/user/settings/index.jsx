@@ -4,6 +4,7 @@ import { setLoginStateOutsideComponent } from '../../../router';
 import getUserDetail from '../../../apis/userServices/getUserDetail';
 import updateUser from '../../../apis/userServices/updateUser';
 import uploadFile from '../../../apis/fileServices/uploadFile';
+import changePassword from '../../../apis/userServices/changePassword';
 
 const Settings = () => {
     const [username, setUsername] = useState();
@@ -14,6 +15,11 @@ const Settings = () => {
     const fileInputRef = useRef();
     const [isUploading, setIsUploading] = useState(false);
     const [previewAvatar, setPreviewAvatar] = useState();
+    const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
 
     const handleUpdateUser = async () => {
         try {
@@ -46,6 +52,30 @@ const Settings = () => {
                 setAvatarUrl(res);
             }
             setShowUploadModal(false);
+        }
+    };
+    const handleOpenChangePasswordModal = () => setShowChangePasswordModal(true);
+    const handleCloseChangePasswordModal = () => {
+        setShowChangePasswordModal(false);
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setError('');
+    };
+    const handleChangePassword = async () => {
+        if (newPassword !== confirmPassword) {
+            setError('New password and confirm password do not match');
+            return;
+        }
+        try {
+            const response = await changePassword(userInfor.id, currentPassword, newPassword, confirmPassword);
+            if (response.status === 200) {
+                handleSignOut();
+            } else {
+                setError(response.message || 'Failed to change password');
+            }
+        } catch (error) {
+            setError('An error occurred while changing password');
         }
     };
     useEffect(() => {
@@ -102,18 +132,24 @@ const Settings = () => {
                     </div>
                     <button
                         className={`m-auto flex-wrap rounded-full border-4 px-8 py-2 text-[1.3rem] font-bold active:translate-y-1 ${
-                            (username === userInfor?.username && (avatarUrl === userInfor?.avatar))
+                            (username === userInfor?.username && (avatarUrl === userInfor?.media.media_link))
                                 ? 'cursor-not-allowed bg-gray-300'
                                 : 'bg-[#cbe989] hover:bg-[#d1ee9d]'
                         } `}
                         onClick={handleUpdateUser}
-                        disabled={username === userInfor?.username && (avatarUrl === userInfor?.avatar)}
+                        disabled={username === userInfor?.username && (avatarUrl === userInfor?.media.media_link)}
                     >
                         Save
                     </button>
                 </div>
             </div>
             <div className="m-auto mt-4 flex w-full max-w-[36rem] items-center justify-center rounded-2xl bg-[#e4e3db] p-4">
+                <button
+                    className="m-auto flex-wrap rounded-full border-4 bg-[#b6a4e6] px-8 py-2 text-[1.3rem] font-bold hover:bg-[#a18ad6] active:translate-y-1"
+                    onClick={handleOpenChangePasswordModal}
+                >
+                    Change password
+                </button>
                 <button
                     className="m-auto flex-wrap rounded-full border-4 bg-[#ffa7a0] px-8 py-2 text-[1.3rem] font-bold hover:bg-[#ffb9b3] active:translate-y-1"
                     onClick={handleSignOut}
@@ -151,6 +187,47 @@ const Settings = () => {
                             className="rounded-full bg-[#ffa7a0] px-6 py-2 font-bold text-white hover:bg-[#ffb9b3]"
                             onClick={handleCloseUploadModal}
                             disabled={isUploading}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+            {showChangePasswordModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div className="rounded-2xl bg-[#6d5a7b] p-8 flex flex-col items-center min-w-[340px] relative">
+                        <div className="font-bold text-white text-lg mb-4">Change password</div>
+                        <input
+                            type="password"
+                            placeholder="Current password"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            className="w-full rounded-[5px] bg-amber-50 px-3 py-2 focus:outline-none mb-4"
+                        />
+                        <input
+                            type="password"
+                            placeholder="New password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            className="w-full rounded-[5px] bg-amber-50 px-3 py-2 focus:outline-none mb-4"
+                        />
+                        <input
+                            type="password"
+                            placeholder="Confirm password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full rounded-[5px] bg-amber-50 px-3 py-2 focus:outline-none mb-4"
+                        />
+                        {error && <div className="text-red-500 mb-4">{error}</div>}
+                        <button
+                            className="rounded-full bg-[#cbe989] px-6 py-2 font-bold text-[#333] hover:bg-[#d1ee9d] mb-2"
+                            onClick={handleChangePassword}
+                        >
+                            Save
+                        </button>
+                        <button
+                            className="rounded-full bg-[#ffa7a0] px-6 py-2 font-bold text-white hover:bg-[#ffb9b3]"
+                            onClick={handleCloseChangePasswordModal}
                         >
                             Cancel
                         </button>
