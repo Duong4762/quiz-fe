@@ -1,7 +1,9 @@
 import { useParams } from 'react-router-dom';
 import PlayPageHeader from '../component/play/playPageHeader';
 import PlayPage from '../pages/play';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import useWebSocketListener from '../hook/useWebSocketListener';
+import createQuizzSession from '../apis/quizzSessionServices/createQuizzSession';
 
 const GameContext = createContext();
 
@@ -12,9 +14,10 @@ export const useGameContext = () => {
 const PlayPageLayout = () => {
     const { quizId, roomId } = useParams();
     const [gameStatus, setGameStatus] = useState({
-        status: 'waitingg',
-        roomId: '123456',
+        status: '', //WAITING, STARTED, PAUSED, ENDED
+        roomId: '',
         quizzData: {
+            id: '',
             name: 'quiz',
             questions: [
                 {
@@ -68,6 +71,19 @@ const PlayPageLayout = () => {
         current_question_index: 0,
         participants: [],
     });
+    useWebSocketListener(localStorage.getItem('userId'), setGameStatus);
+
+    useEffect(() => {
+        if (quizId) {
+            try {
+                createQuizzSession({
+                    quiz_id,
+                    status: 'WAITING',
+                    current_question_id: 0,
+                });
+            } catch (error) {}
+        }
+    }, []);
     return (
         <GameContext.Provider value={{ gameStatus, setGameStatus }}>
             <div>

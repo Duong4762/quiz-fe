@@ -15,7 +15,8 @@ const Settings = () => {
     const fileInputRef = useRef();
     const [isUploading, setIsUploading] = useState(false);
     const [previewAvatar, setPreviewAvatar] = useState();
-    const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+    const [showChangePasswordModal, setShowChangePasswordModal] =
+        useState(false);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -23,9 +24,16 @@ const Settings = () => {
 
     const handleUpdateUser = async () => {
         try {
-            await updateUser({ username, avatar_url: avatarUrl || userInfor?.avatar });
+            await updateUser({
+                username,
+                avatar_url: avatarUrl || userInfor?.avatar,
+            });
             console.log(username, avatarUrl);
-            setUserInfor({ ...userInfor, username, avatar: avatarUrl || userInfor?.avatar });
+            setUserInfor({
+                ...userInfor,
+                username,
+                avatar: avatarUrl || userInfor?.avatar,
+            });
         } catch (error) {
             console.log(error);
         }
@@ -45,7 +53,6 @@ const Settings = () => {
             setPreviewAvatar(URL.createObjectURL(file));
             setIsUploading(true);
             setAvatarFile(file);
-            // Gọi API upload ảnh
             const res = await uploadFile(file);
             setIsUploading(false);
             if (res) {
@@ -54,7 +61,8 @@ const Settings = () => {
             setShowUploadModal(false);
         }
     };
-    const handleOpenChangePasswordModal = () => setShowChangePasswordModal(true);
+    const handleOpenChangePasswordModal = () =>
+        setShowChangePasswordModal(true);
     const handleCloseChangePasswordModal = () => {
         setShowChangePasswordModal(false);
         setCurrentPassword('');
@@ -68,7 +76,12 @@ const Settings = () => {
             return;
         }
         try {
-            const response = await changePassword(userInfor.id, currentPassword, newPassword, confirmPassword);
+            const response = await changePassword(
+                userInfor.id,
+                currentPassword,
+                newPassword,
+                confirmPassword
+            );
             if (response.status === 200) {
                 handleSignOut();
             } else {
@@ -94,16 +107,23 @@ const Settings = () => {
     return (
         <>
             <div className="m-auto w-full max-w-[36rem] rounded-2xl bg-[#e4e3db] p-8">
-                <div className="flex flex-col items-center justify-center relative gap-2">
-                    <div onClick={handleAvatarClick} className="cursor-pointer flex flex-col items-center">
+                <div className="relative flex flex-col items-center justify-center gap-2">
+                    <div
+                        onClick={handleAvatarClick}
+                        className="flex cursor-pointer flex-col items-center"
+                    >
                         {avatarUrl || userInfor?.avatar ? (
-                            <img src={avatarUrl || userInfor?.avatar} alt="avatar" className="w-32 h-32 rounded-full border-2 bg-[#ceccc5] object-cover aspect-square" />
+                            <img
+                                src={avatarUrl || userInfor?.avatar}
+                                alt="avatar"
+                                className="aspect-square h-32 w-32 rounded-full border-2 bg-[#ceccc5] object-cover"
+                            />
                         ) : (
-                            <UserIcon className="w-32 h-32 rounded-full border-2 bg-[#ceccc5]" />
+                            <UserIcon className="h-32 w-32 rounded-full border-2 bg-[#ceccc5]" />
                         )}
                     </div>
                     <button
-                        className="mt-3 rounded-full bg-[#b6a4e6] px-6 py-2 text-white font-bold hover:bg-[#a18ad6] transition"
+                        className="mt-3 rounded-full bg-[#b6a4e6] px-6 py-2 font-bold text-white transition hover:bg-[#a18ad6]"
                         onClick={handleOpenUploadModal}
                     >
                         Change profile picture
@@ -132,12 +152,16 @@ const Settings = () => {
                     </div>
                     <button
                         className={`m-auto flex-wrap rounded-full border-4 px-8 py-2 text-[1.3rem] font-bold active:translate-y-1 ${
-                            (username === userInfor?.username && (avatarUrl === userInfor?.media.media_link))
+                            username === userInfor?.username &&
+                            avatarUrl === userInfor?.media.media_link
                                 ? 'cursor-not-allowed bg-gray-300'
                                 : 'bg-[#cbe989] hover:bg-[#d1ee9d]'
                         } `}
                         onClick={handleUpdateUser}
-                        disabled={username === userInfor?.username && (avatarUrl === userInfor?.media.media_link)}
+                        disabled={
+                            username === userInfor?.username &&
+                            avatarUrl === userInfor?.media.media_link
+                        }
                     >
                         Save
                     </button>
@@ -158,14 +182,20 @@ const Settings = () => {
                 </button>
             </div>
             {showUploadModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                    <div className="rounded-2xl bg-[#6d5a7b] p-8 flex flex-col items-center min-w-[340px] relative">
-                        <div className="font-bold text-white text-lg mb-4">Upload profile picture</div>
-                        <label className="w-32 h-32 rounded-full bg-[#e4e3db] flex items-center justify-center cursor-pointer mb-4 border-2 border-dashed border-[#b6a4e6] overflow-hidden">
+                <div className="bg-opacity-40 fixed inset-0 z-50 flex items-center justify-center bg-black">
+                    <div className="relative flex min-w-[340px] flex-col items-center rounded-2xl bg-[#6d5a7b] p-8">
+                        <div className="mb-4 text-lg font-bold text-white">
+                            Upload profile picture
+                        </div>
+                        <label className="mb-4 flex h-32 w-32 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-[#b6a4e6] bg-[#e4e3db]">
                             {previewAvatar ? (
-                                <img src={previewAvatar} alt="preview" className="w-full h-full object-cover" />
+                                <img
+                                    src={previewAvatar}
+                                    alt="preview"
+                                    className="h-full w-full object-cover"
+                                />
                             ) : (
-                                <UserIcon className="w-16 h-16 text-[#b6a4e6]" />
+                                <UserIcon className="h-16 w-16 text-[#b6a4e6]" />
                             )}
                             <input
                                 type="file"
@@ -175,10 +205,15 @@ const Settings = () => {
                                 className="hidden"
                             />
                         </label>
-                        {isUploading && <div className="mb-2 text-white">Uploading...</div>}
+                        {isUploading && (
+                            <div className="mb-2 text-white">Uploading...</div>
+                        )}
                         <button
-                            className="rounded-full bg-[#cbe989] px-6 py-2 font-bold text-[#333] hover:bg-[#d1ee9d] mb-2 disabled:opacity-50"
-                            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                            className="mb-2 rounded-full bg-[#cbe989] px-6 py-2 font-bold text-[#333] hover:bg-[#d1ee9d] disabled:opacity-50"
+                            onClick={() =>
+                                fileInputRef.current &&
+                                fileInputRef.current.click()
+                            }
                             disabled={isUploading}
                         >
                             Choose image
@@ -194,33 +229,37 @@ const Settings = () => {
                 </div>
             )}
             {showChangePasswordModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                    <div className="rounded-2xl bg-[#6d5a7b] p-8 flex flex-col items-center min-w-[340px] relative">
-                        <div className="font-bold text-white text-lg mb-4">Change password</div>
+                <div className="bg-opacity-40 fixed inset-0 z-50 flex items-center justify-center bg-black">
+                    <div className="relative flex min-w-[340px] flex-col items-center rounded-2xl bg-[#6d5a7b] p-8">
+                        <div className="mb-4 text-lg font-bold text-white">
+                            Change password
+                        </div>
                         <input
                             type="password"
                             placeholder="Current password"
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
-                            className="w-full rounded-[5px] bg-amber-50 px-3 py-2 focus:outline-none mb-4"
+                            className="mb-4 w-full rounded-[5px] bg-amber-50 px-3 py-2 focus:outline-none"
                         />
                         <input
                             type="password"
                             placeholder="New password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full rounded-[5px] bg-amber-50 px-3 py-2 focus:outline-none mb-4"
+                            className="mb-4 w-full rounded-[5px] bg-amber-50 px-3 py-2 focus:outline-none"
                         />
                         <input
                             type="password"
                             placeholder="Confirm password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full rounded-[5px] bg-amber-50 px-3 py-2 focus:outline-none mb-4"
+                            className="mb-4 w-full rounded-[5px] bg-amber-50 px-3 py-2 focus:outline-none"
                         />
-                        {error && <div className="text-red-500 mb-4">{error}</div>}
+                        {error && (
+                            <div className="mb-4 text-red-500">{error}</div>
+                        )}
                         <button
-                            className="rounded-full bg-[#cbe989] px-6 py-2 font-bold text-[#333] hover:bg-[#d1ee9d] mb-2"
+                            className="mb-2 rounded-full bg-[#cbe989] px-6 py-2 font-bold text-[#333] hover:bg-[#d1ee9d]"
                             onClick={handleChangePassword}
                         >
                             Save
