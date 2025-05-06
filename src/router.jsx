@@ -53,15 +53,7 @@ const renderUserRouter = () => {
                         <Route path=":idQuiz" element={<EditPage />} />
                     </Route>
                     <Route
-                        path="/play/:quizId"
-                        element={
-                            <PrivateRoute>
-                                <PlayPageLayout />
-                            </PrivateRoute>
-                        }
-                    />
-                    <Route
-                        path="/join/:roomId"
+                        path="/play/:roomId"
                         element={
                             <PrivateRoute>
                                 <PlayPageLayout />

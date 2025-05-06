@@ -9,6 +9,10 @@ const EditPageHeader = ({ data }) => {
     const [loading, setLoading] = useState(false);
 
     const handleCompletelyEditQuiz = async () => {
+        if (!data.questions || data.questions.length === 0) {
+            alert('Bạn phải thêm ít nhất 1 câu hỏi để hoàn tất quiz!');
+            return;
+        }
         setLoading(true);
         try {
             let updatedMediaLinkQuiz = null;

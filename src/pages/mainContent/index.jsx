@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import HomeTypeBar from '../../component/home/homeTypeBar';
 import MethodCard from '../../component/home/methodCard';
 import ListQuiz from '../../component/home/listQuiz';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import getListQuizByKeyword from '../../apis/quizServices/getListQuizByKeyword';
 import getListQuizByTag from '../../apis/quizServices/getListQuizByTag';
 
 const MainContent = () => {
+    const navigate = useNavigate();
     const allTags = [
         'Art & Literature',
         'Entertainment',
@@ -23,6 +24,13 @@ const MainContent = () => {
     const [listQuizByTag, setListQuizByTag] = useState();
     const [listQuizRecently, setListQuizRecently] = useState();
     const [listQuizByRating, setListQuizByRating] = useState();
+    const [PIN, setPIN] = useState();
+    useEffect(() => {
+        if (PIN && PIN.length == 6) {
+            navigate(`/play/${PIN}`);
+        }
+    }, [PIN]);
+
     useEffect(() => {
         const fetchData = async () => {
             const listQuizByRating = await getListQuizByKeyword(
@@ -59,6 +67,10 @@ const MainContent = () => {
                         placeholder={placeholder}
                         onFocus={() => setPlaceholder('')}
                         onBlur={() => setPlaceholder('123 456')}
+                        value={PIN}
+                        onChange={(e) => {
+                            setPIN(e.target.value);
+                        }}
                     />
                 </div>
             </div>

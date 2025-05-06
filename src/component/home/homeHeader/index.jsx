@@ -15,6 +15,7 @@ const HomeHeader = () => {
     const [isOpenMenu, setIsOpenMenu] = useState(false);
     const [isSearching, setIsSearching] = useState();
     const [searchValue, setSearchValue] = useState('');
+    const [PIN, setPIN] = useState();
     const iconList = [
         { src: '/public/image/homeIcon.svg', label: 'Start', path: '' },
         {
@@ -58,6 +59,12 @@ const HomeHeader = () => {
         setIsOpenMenu(false);
     }, [tagId]);
 
+    useEffect(() => {
+        if (PIN && PIN.length == 6) {
+            navigate(`/play/${PIN}`);
+        }
+    }, [PIN]);
+
     return (
         <>
             <div className="fixed z-100 flex w-full justify-center bg-[#fffdf4]">
@@ -82,6 +89,10 @@ const HomeHeader = () => {
                                 placeholder={placeholder}
                                 onFocus={() => setPlaceholder('')}
                                 onBlur={() => setPlaceholder('123 456')}
+                                value={PIN}
+                                onChange={(e) => {
+                                    setPIN(e.target.value);
+                                }}
                             />
                         </div>
                         <div className="flex gap-1.5 px-4">
@@ -101,7 +112,7 @@ const HomeHeader = () => {
                                                 );
                                             }
                                         }}
-                                        className="h-full w-70 rounded-l-full bg-white px-4 font-bold focus:outline-none"
+                                        className="h-full w-40 rounded-l-full bg-white px-4 font-bold focus:outline-none"
                                         onBlur={() => setIsSearching(false)}
                                     />
                                     <div

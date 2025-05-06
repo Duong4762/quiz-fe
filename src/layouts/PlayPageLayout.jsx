@@ -3,7 +3,11 @@ import PlayPageHeader from '../component/play/playPageHeader';
 import PlayPage from '../pages/play';
 import { createContext, useContext, useState, useEffect } from 'react';
 import useWebSocketListener from '../hook/useWebSocketListener';
-import createQuizzSession from '../apis/quizzSessionServices/createQuizzSession';
+import outQuizzSession from '../apis/quizzSessionServices/outQuizzSession';
+import joinQuizzSession from '../apis/quizzSessionServices/joinQuizzSession';
+import deleteQuizzSession from '../apis/quizzSessionServices/deleteQuizzSession';
+import getQuizzSessionDetail from '../apis/quizzSessionServices/getQuizzSessionDetail';
+import { getQuiz } from '../apis/quizServices';
 
 const GameContext = createContext();
 
@@ -12,84 +16,104 @@ export const useGameContext = () => {
 };
 
 const PlayPageLayout = () => {
-    const { quizId, roomId } = useParams();
+    const [loading, setLoading] = useState(true);
+    const { roomId } = useParams();
     const [gameStatus, setGameStatus] = useState({
-        status: '', //WAITING, STARTED, PAUSED, ENDED
-        roomId: '',
+        sessionId: '',
+        status: 'WAITING', //WAITING, STARTED, PAUSED, ENDED
+        sessionCode: '',
         quizzData: {
             id: '',
-            name: 'quiz',
-            questions: [
-                {
-                    image: '/public/image/test.jpg',
-                    content: 'What is your name?',
-                    answers: [
-                        {
-                            content: 'Duong',
-                            is_correct: true,
-                        },
-                        {
-                            content: 'Duong1',
-                            is_correct: false,
-                        },
-                        {
-                            content: 'Duong1',
-                            is_correct: false,
-                        },
-                        {
-                            content: 'Duong1',
-                            is_correct: false,
-                        },
-                    ],
-                    time: 5,
-                },
-                {
-                    image: '/public/image/test.jpg',
-                    content: 'What is your name 2?',
-                    answers: [
-                        {
-                            content: 'Duong',
-                            is_correct: true,
-                        },
-                        {
-                            content: 'Duong1',
-                            is_correct: false,
-                        },
-                        {
-                            content: 'Duong1',
-                            is_correct: false,
-                        },
-                        {
-                            content: 'Duong1',
-                            is_correct: false,
-                        },
-                    ],
-                    time: 10,
-                },
-            ],
         },
         current_question_index: 0,
         participants: [],
     });
-    useWebSocketListener(localStorage.getItem('userId'), setGameStatus);
+    const isWebSocketConnected = useWebSocketListener(
+        localStorage.getItem('userId'),
+        setGameStatus,
+        localStorage.getItem('token')
+    );
 
     useEffect(() => {
-        if (quizId) {
-            try {
-                createQuizzSession({
-                    quiz_id,
-                    status: 'WAITING',
-                    current_question_id: 0,
-                });
-            } catch (error) {}
+        if (isWebSocketConnected) {
+            const fetchData = async () => {
+                try {
+                    const response = await getQuizzSessionDetail(roomId);
+
+                    setGameStatus((prev) => ({
+                        ...prev,
+                        sessionId: response.id,
+                        status: response.status,
+                        sessionCode: response.session_code,
+                        quizzData: { id: response.quiz_id },
+                        hostId: response.created_by,
+                    }));
+                } catch (error) {
+                    console.log(error);
+                    alert('Không thể tham gia phiên chơi. Vui lòng thử lại.');
+                }
+            };
+            fetchData();
         }
-    }, []);
+    }, [isWebSocketConnected]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (gameStatus.quizzData.id) {
+                    const response = await getQuiz(gameStatus.quizzData.id);
+                    setGameStatus((prev) => ({
+                        ...prev,
+                        quizzData: response,
+                    }));
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.log(error);
+                setLoading(false);
+                alert('Không thể tham gia phiên chơi. Vui lòng thử lại.');
+            }
+        };
+        fetchData();
+    }, [gameStatus.quizzData.id]);
+
+    useEffect(() => {
+        if (gameStatus.sessionCode) {
+            const join = async () => {
+                try {
+                    const response = await joinQuizzSession(
+                        gameStatus.sessionCode
+                    );
+                } catch (error) {
+                    console.log(error);
+                    alert('Không thể tham gia phiên chơi. Vui lòng thử lại.');
+                }
+            };
+            join();
+        }
+
+        return () => {
+            if (gameStatus.hostId === Number(localStorage.getItem('userId')))
+                deleteQuizzSession(gameStatus.sessionId);
+        };
+    }, [gameStatus.sessionCode]);
     return (
         <GameContext.Provider value={{ gameStatus, setGameStatus }}>
-            <div>
-                <PlayPageHeader />
-                <PlayPage />
-            </div>
+            {loading ? (
+                <>
+                    <div className="fixed inset-0 z-20 flex items-center justify-center bg-black opacity-80"></div>
+                    <div className="fixed inset-0 z-30 flex items-center justify-center">
+                        <span className="animate-pulse text-3xl font-bold text-white">
+                            Loading...
+                        </span>
+                    </div>
+                </>
+            ) : (
+                <div>
+                    <PlayPageHeader />
+                    <PlayPage />
+                </div>
+            )}
         </GameContext.Provider>
     );
 };

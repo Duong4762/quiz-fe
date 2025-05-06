@@ -3,12 +3,14 @@ const createQuizzSession = async (data) => {
     try {
         console.log('call api create quizz session');
 
-        const apiUpdateUser = await postJson(
+        const response = await postJson(
             `/api/v1/quiz-sessions`,
             data,
             localStorage.getItem('token')
         );
-        console.log('call api create quizz session');
+
+        console.log('call api create quizz session completely');
+        return response.data;
     } catch (error) {
         throw error;
     }

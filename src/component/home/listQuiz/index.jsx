@@ -1,10 +1,10 @@
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { StarIcon } from '../../../assets/icon';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import createQuizzSession from '../../../apis/quizzSessionServices/createQuizzSession';
 
 const ListQuiz = ({ filter, list }) => {
+    const navigate = useNavigate();
     const sliderRef = useRef(null);
     const scrollLeft = () => {
         if (sliderRef.current) {
@@ -55,7 +55,28 @@ const ListQuiz = ({ filter, list }) => {
                                         className="h-full w-full object-cover"
                                     />
                                     <div className="absolute h-full w-full rounded-2xl bg-gray-800 opacity-0 transition-opacity duration-200 group-hover:opacity-40"></div>
-                                    <div className="absolute top-[50%] left-[50%] flex h-[35%] translate-x-[-50%] translate-y-[-50%] cursor-pointer items-center justify-center rounded-full border-3 bg-[#ffdfb6] p-4 text-center text-[90%] whitespace-nowrap opacity-0 transition-opacity duration-200 group-hover:opacity-100 hover:bg-[#ffc679] max-md:w-[80%]">
+                                    <div
+                                        onClick={async () => {
+                                            try {
+                                                const response =
+                                                    await createQuizzSession({
+                                                        quiz_id: item.id,
+                                                        status: 'WAITING',
+                                                        current_question_id: 0,
+                                                    });
+
+                                                navigate(
+                                                    `/play/${response.session_code}`
+                                                );
+                                            } catch (error) {
+                                                console.error(
+                                                    'Failed to create session:',
+                                                    error
+                                                );
+                                            }
+                                        }}
+                                        className="absolute top-[50%] left-[50%] flex h-[35%] translate-x-[-50%] translate-y-[-50%] cursor-pointer items-center justify-center rounded-full border-3 bg-[#ffdfb6] p-4 text-center text-[90%] whitespace-nowrap opacity-0 transition-opacity duration-200 group-hover:opacity-100 hover:bg-[#ffc679] max-md:w-[80%]"
+                                    >
                                         <div>Play Now</div>
                                     </div>
                                 </div>

@@ -6,10 +6,10 @@ const getQuiz = async (id) => {
         const apiGetQuiz = '/api/v1/quizzes' + `/${id}`;
         const response = await get(apiGetQuiz, localStorage.getItem('token'));
         console.log('call api get quizz completely');
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 };
 export default getQuiz;

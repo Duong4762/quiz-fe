@@ -2,6 +2,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getQuiz, deleteQuiz } from '../../apis/quizServices';
 import { StarIcon } from '../../assets/icon';
+import createQuizzSession from '../../apis/quizzSessionServices/createQuizzSession';
 
 const DetailPage = () => {
     const userId = localStorage.getItem('userId');
@@ -66,7 +67,25 @@ const DetailPage = () => {
                         <div>{quiz?.questions.length} questions</div>
                     </div>
                     <div className="flex gap-4 max-md:flex-col">
-                        <div className="my-4 flex w-fit cursor-pointer items-center justify-center rounded-full border-4 bg-[#6ae439] px-12 py-2 text-[1.3rem] hover:bg-[#c3f1b0] active:translate-y-1 max-md:my-0 max-md:w-full">
+                        <div
+                            onClick={async () => {
+                                try {
+                                    const response = await createQuizzSession({
+                                        quiz_id: quizId,
+                                        status: 'WAITING',
+                                        current_question_id: 0,
+                                    });
+
+                                    navigate(`/play/${response.session_code}`);
+                                } catch (error) {
+                                    console.error(
+                                        'Failed to create session:',
+                                        error
+                                    );
+                                }
+                            }}
+                            className="my-4 flex w-fit cursor-pointer items-center justify-center rounded-full border-4 bg-[#6ae439] px-12 py-2 text-[1.3rem] hover:bg-[#c3f1b0] active:translate-y-1 max-md:my-0 max-md:w-full"
+                        >
                             Play now
                         </div>
                         {userId == quiz?.creator.id && (

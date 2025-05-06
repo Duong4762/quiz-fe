@@ -6,7 +6,7 @@ import updateUser from '../../../apis/userServices/updateUser';
 import uploadFile from '../../../apis/fileServices/uploadFile';
 import changePassword from '../../../apis/userServices/changePassword';
 
-const Settings = () => {
+const Settings = ({ userDetail }) => {
     const [username, setUsername] = useState();
     const [userInfor, setUserInfor] = useState();
     const [showUploadModal, setShowUploadModal] = useState(false);
@@ -57,6 +57,8 @@ const Settings = () => {
             setIsUploading(false);
             if (res) {
                 setAvatarUrl(res);
+                console.log(res);
+                await updateUser({ avatar_url: res });
             }
             setShowUploadModal(false);
         }
@@ -92,18 +94,13 @@ const Settings = () => {
         }
     };
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await getUserDetail();
-            console.log(response);
-            setUserInfor(response);
-            setUsername(response.username);
-            setAvatarUrl(response.media.media_link);
-        };
-        fetchData();
+        setUserInfor(userDetail);
+        setUsername(userDetail?.username);
+        setAvatarUrl(userDetail?.media.media_link);
         return () => {
             if (previewAvatar) URL.revokeObjectURL(previewAvatar);
         };
-    }, []);
+    }, [userDetail]);
     return (
         <>
             <div className="m-auto w-full max-w-[36rem] rounded-2xl bg-[#e4e3db] p-8">
@@ -167,7 +164,7 @@ const Settings = () => {
                     </button>
                 </div>
             </div>
-            <div className="m-auto mt-4 flex w-full max-w-[36rem] items-center justify-center rounded-2xl bg-[#e4e3db] p-4">
+            <div className="m-auto mt-4 flex w-full max-w-[36rem] flex-col items-center justify-center gap-4 rounded-2xl bg-[#e4e3db] p-4">
                 <button
                     className="m-auto flex-wrap rounded-full border-4 bg-[#b6a4e6] px-8 py-2 text-[1.3rem] font-bold hover:bg-[#a18ad6] active:translate-y-1"
                     onClick={handleOpenChangePasswordModal}

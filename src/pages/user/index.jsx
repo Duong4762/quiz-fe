@@ -1,18 +1,32 @@
 import { useParams } from 'react-router-dom';
-import { UserIcon } from '../../assets/icon';
 import ListQuizzes from '../../component/user/listQuizzes';
 import Settings from '../../component/user/settings';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import getUserDetail from '../../apis/userServices/getUserDetail';
 
 const UserPage = () => {
+    const [userDetail, setUserDetail] = useState();
     const { slug } = useParams();
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await getUserDetail();
+            setUserDetail(response);
+        };
+
+        fetchData();
+    }, []);
     return (
         <div className="container min-h-screen max-md:px-3.5">
             <div className="border-b-1 border-[#ceccc5] py-4">
                 <div className="flex gap-4">
-                    <UserIcon className="h-12 rounded-full border-2 md:h-18" />
+                    <img
+                        src={userDetail?.media.media_link}
+                        alt=""
+                        className="h-12 rounded-full border-2 md:h-18"
+                    />
                     <h2 className="flex items-center text-4xl font-bold max-md:text-3xl">
-                        username
+                        {userDetail?.username}
                     </h2>
                 </div>
                 <div className="flex gap-4 pt-4">
@@ -44,7 +58,7 @@ const UserPage = () => {
                 {slug === 'library' ? (
                     <ListQuizzes />
                 ) : slug === 'profile' ? (
-                    <Settings />
+                    <Settings userDetail={userDetail} />
                 ) : (
                     <div></div>
                 )}

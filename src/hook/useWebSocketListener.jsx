@@ -1,12 +1,11 @@
-import { useEffect, useRef } from 'react';
-// import SockJS from 'sockjs-client';
-// import Stomp from 'stompjs';
+import { useEffect, useRef, useState } from 'react';
 
 const useWebSocketListener = (userId, setGameStatus, authToken) => {
     const stompClientRef = useRef(null);
+    const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8888/websocket'); // hoặc wss://... nếu dùng HTTPS/ngrok
+        const socket = new SockJS('http://localhost:8888/websocket');
         const stompClient = Stomp.over(socket);
         stompClientRef.current = stompClient;
 
@@ -18,6 +17,7 @@ const useWebSocketListener = (userId, setGameStatus, authToken) => {
             headers,
             (frame) => {
                 console.log('Connected:', frame);
+                setIsConnected(true);
                 stompClient.subscribe(
                     `/user/${userId}/queue/messages`,
                     (message) => {
@@ -32,6 +32,7 @@ const useWebSocketListener = (userId, setGameStatus, authToken) => {
                                         ...prev,
                                         participants: data.users,
                                     }));
+
                                     break;
 
                                 case 'CHANGE_STATUS_ROOM':
@@ -41,17 +42,19 @@ const useWebSocketListener = (userId, setGameStatus, authToken) => {
                                     }));
                                     break;
 
-                                case 'LOAD_QUIZ':
+                                case 'LEADERBOARD':
                                     setGameStatus((prev) => ({
                                         ...prev,
-                                        quizzData: data.quizzData,
+                                        leaderboard: data.leaderboard,
                                     }));
+
                                     break;
 
-                                case 'CHANGE_QUESTION_INDEX':
+                                case 'NEXT_QUESTION':
                                     setGameStatus((prev) => ({
                                         ...prev,
-                                        current_question_index: data.index,
+                                        current_question_index:
+                                            data.current_question_id,
                                     }));
                                     break;
 
@@ -79,6 +82,7 @@ const useWebSocketListener = (userId, setGameStatus, authToken) => {
             }
         };
     }, [userId, setGameStatus, authToken]);
+    return isConnected;
 };
 
 export default useWebSocketListener;

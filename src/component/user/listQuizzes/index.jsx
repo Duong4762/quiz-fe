@@ -36,11 +36,18 @@ const ListQuizzes = () => {
                                 className="absolute z-0 h-full w-full rounded-2xl"
                             />
                         </div>
-                        <Link to={`/${quiz.id}`}>
-                            <div className="flex cursor-pointer truncate py-2 text-[1.1rem] font-bold hover:underline">
-                                {quiz.name}
+                        <div className="flex justify-between max-md:justify-center">
+                            <Link to={`/${quiz.id}`}>
+                                <div className="flex cursor-pointer truncate py-2 text-[1.1rem] font-bold hover:underline">
+                                    {quiz.name}
+                                </div>
+                            </Link>
+                            <div className="flex items-center py-2 text-[0.8rem] font-bold text-gray-700 opacity-70 max-md:hidden">
+                                {new Date(quiz.createdAt).toLocaleDateString(
+                                    'vi-VN'
+                                )}
                             </div>
-                        </Link>
+                        </div>
                     </div>
                 );
             })}
