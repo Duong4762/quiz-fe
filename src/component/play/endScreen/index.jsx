@@ -14,7 +14,7 @@ const EndScreen = () => {
             {gameStatus.leaderboard.map((player) => (
                 <div
                     key={player.userId}
-                    className="flex justify-between rounded-full border-4 border-black bg-emerald-900 px-8 py-1"
+                    className="mb-2 flex justify-between rounded-full border-4 border-black bg-emerald-900 px-8 py-1"
                 >
                     <div className="flex gap-10">
                         <img

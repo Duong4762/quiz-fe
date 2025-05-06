@@ -5,7 +5,7 @@ const useWebSocketListener = (userId, setGameStatus, authToken) => {
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8888/websocket');
+        const socket = new SockJS('http://26.25.182.231:8888/websocket');
         const stompClient = Stomp.over(socket);
         stompClientRef.current = stompClient;
 

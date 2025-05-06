@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import PlayPageHeader from '../component/play/playPageHeader';
 import PlayPage from '../pages/play';
 import { createContext, useContext, useState, useEffect } from 'react';
@@ -16,6 +16,7 @@ export const useGameContext = () => {
 };
 
 const PlayPageLayout = () => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const { roomId } = useParams();
     const [gameStatus, setGameStatus] = useState({
@@ -51,6 +52,7 @@ const PlayPageLayout = () => {
                 } catch (error) {
                     console.log(error);
                     alert('Không thể tham gia phiên chơi. Vui lòng thử lại.');
+                    navigate(-1);
                 }
             };
             fetchData();
@@ -72,6 +74,7 @@ const PlayPageLayout = () => {
                 console.log(error);
                 setLoading(false);
                 alert('Không thể tham gia phiên chơi. Vui lòng thử lại.');
+                navigate(-1);
             }
         };
         fetchData();
@@ -87,6 +90,7 @@ const PlayPageLayout = () => {
                 } catch (error) {
                     console.log(error);
                     alert('Không thể tham gia phiên chơi. Vui lòng thử lại.');
+                    navigate(-1);
                 }
             };
             join();

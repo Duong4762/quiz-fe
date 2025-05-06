@@ -23,7 +23,7 @@ const UserPage = () => {
                     <img
                         src={userDetail?.media.media_link}
                         alt=""
-                        className="h-12 rounded-full border-2 md:h-18"
+                        className="h-12 w-12 rounded-full border-2 object-cover md:h-18 md:w-18"
                     />
                     <h2 className="flex items-center text-4xl font-bold max-md:text-3xl">
                         {userDetail?.username}
