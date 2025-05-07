@@ -10,6 +10,8 @@ const RegisterPage = () => {
     const [data, setData] = useState({ email: '', password: '', username: '' });
     const [errorMessage, setErrorMessage] = useState('');
     const [otpError, setOtpError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
     const handleChangeInput = (e) => {
         const { name, value } = e.target;
         setData({ ...data, [name]: value });
@@ -37,6 +39,7 @@ const RegisterPage = () => {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         try {
             await register(data);
             setShowOtpPopup(true);
@@ -48,6 +51,8 @@ const RegisterPage = () => {
                     error.response?.data?.data?.detail.username ||
                     'Đăng ký thất bại'
             );
+        } finally {
+            setIsLoading(false);
         }
     };
     const handleOtpComplete = async (otp) => {
@@ -167,9 +172,14 @@ const RegisterPage = () => {
                     )}
                     <button
                         type="submit"
-                        className="w-full rounded-md bg-[#0ca65a] py-3 font-bold text-white shadow-sm transition-transform duration-100 hover:bg-[#0db765] active:translate-y-[2px]"
+                        className={`w-full rounded-md py-3 font-bold text-white shadow-sm transition-transform duration-100 ${
+                            isLoading
+                                ? 'cursor-not-allowed bg-gray-400'
+                                : 'bg-[#0ca65a] hover:bg-[#0db765] active:translate-y-[2px]'
+                        }`}
+                        disabled={isLoading}
                     >
-                        Create account
+                        {isLoading ? '...' : 'Create account'}
                     </button>
                     <div className="flex justify-center py-12 text-[1.1rem] font-bold text-[#73726e]">
                         Got account?
