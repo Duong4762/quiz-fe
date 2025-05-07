@@ -99,6 +99,8 @@ const PlayPageLayout = () => {
         return () => {
             if (gameStatus.hostId === Number(localStorage.getItem('userId')))
                 deleteQuizzSession(gameStatus.sessionId);
+            else if (gameStatus.sessionId)
+                outQuizzSession(gameStatus.sessionId);
         };
     }, [gameStatus.sessionCode]);
     return (

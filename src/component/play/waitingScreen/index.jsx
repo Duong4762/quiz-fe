@@ -12,7 +12,7 @@ const WaitingScreen = () => {
                 <div className="rounded-xl border-2 border-gray-300 bg-white p-2 shadow-lg">
                     <div className="hidden md:block">
                         <QRCodeSVG
-                            value={`https://your-domain.com/join/${gameStatus.sessionCode}`}
+                            value={`https://stunning-termite-ideal.ngrok-free.app/play/${gameStatus.sessionCode}`}
                             size={200}
                             fgColor="#000000"
                             bgColor="#ffffff"
@@ -20,7 +20,7 @@ const WaitingScreen = () => {
                     </div>
                     <div className="block md:hidden">
                         <QRCodeSVG
-                            value={`https://your-domain.com/join/${gameStatus.sessionCode}`}
+                            value={`https://stunning-termite-ideal.ngrok-free.app/play/${gameStatus.sessionCode}`}
                             size={120}
                             fgColor="#000000"
                             bgColor="#ffffff"
