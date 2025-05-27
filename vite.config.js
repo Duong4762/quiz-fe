@@ -9,7 +9,7 @@ export default defineConfig({
     plugins: [react(), tailwindcss(), svgr()],
     server: {
         host: '0.0.0.0',
-        allowedHosts: ['localhost', 'stunning-termite-ideal.ngrok-free.app'],
+        // allowedHosts: ['stunning-termite-ideal.ngrok-free.app'],
         port: 8888,
         cors: true,
     },
